@@ -17,6 +17,18 @@ router.post(
   controller.registration
 );
 router.post('/login', controller.login);
-router.get('/searchUser',controller.getUser);
+router.post('/setPost',controller.setPost);
+router.get('/getPosts', controller.getPosts)
+router.post('/setMessages', controller.setMessages)
+router.get('/getDialogue', controller.getDialogue)
+router.post('/getOunPosts', controller.getOunPosts)
+router.post('/setFrinedList', controller.setFrinedList)
+router.post('/removeFrined', controller.removeFrined)
+router.post('/getOunFriends', controller.getOunFriends)
+router.post('/getUser', controller.getUser)
+
+
+
+
 
 module.exports = router;
