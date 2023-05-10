@@ -1,13 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import { createRoot } from 'react-dom/client';
+import './index.sass';
+import RoutesList from './components/routes/RoutesList';
+import { Provider } from 'react-redux';
+import { store } from './redux';
 
-const root = ReactDOM.createRoot(
+
+const root = createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    hellow world
-  </React.StrictMode>
+    <Provider store={store}>
+      <RoutesList/>
+    </Provider>
 );
 

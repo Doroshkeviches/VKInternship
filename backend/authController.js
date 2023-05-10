@@ -1,8 +1,12 @@
 const User = require('./models/User');
+const Posts = require('./models/Posts');
+
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const { secret } = require('./config');
+const Messages = require('./models/Messages');
+const FriendList = require('./models/FriendList');
 
 function generateAccessToken(id, roles) {
   const payload = {
@@ -59,20 +63,128 @@ class authController {
       res.status(400).json({ message: 'Login failed' });
     }
   }
-  async getUser(req, res) {
+  async setPost(req, res) {
     try {
-      const telNumber = req.query.name;
-      const user = await User.findOne({ telNumber })
-      if (!user) {
-        return res.status(404).json({ message: `User ${telNumber} not found` });
-      }
-      res.json(user);
-
+      const { author, content, createdAt, images, likes } = req.body
+      const post = new Posts({
+        author,
+        content,
+        createdAt,
+        images,
+        likes,
+      });
+      await post.save()
+      return res.json({ message: `The post saved` })
     } catch (e) {
       console.error;
     }
   }
+  async getPosts(req, res) {
+    try {
+      const posts = await Posts.find()
+      return res.json(posts)
+    } catch (e) {
+      console.error;
+    }
+  }
+  async setMessages(req, res) {
+    try {
+      const { username, context, createdAt } = req.body
+      const messages = new Messages({
+        username,
+        context,
+        createdAt,
+      });
+      await messages.save()
+      return res.json({ message: `The message saved` })
+    } catch (e) {
+      console.error;
+    }
+  }
+  async getDialogue(req, res) {
+    try {
+      const messages = await Messages.find()
+      return res.json(messages)
+    } catch (e) {
+      console.error;
+    }
+  }
+  async getOunPosts(req, res) {
+    try {
+      const { username } = req.body
+      const posts = await Posts.find({
+        "author.name": username
+      })
+      return res.json(posts)
+    } catch (e) {
+      console.error;
+    }
+  }
+  async setFrinedList(req, res) {
+    try {
+      const { username, friend} = req.body
+      const candidate = await FriendList.findOne({ username });
+      if (candidate) {
+       await candidate.update({
+          username: username,
+          friends: [...candidate.friends, friend]
+        })
+        res.json(candidate)
+      } else {
+        const list = new FriendList({
+          username: username,
+          friends: [friend]
+        });
+        await list.save();
+        return res.json({ message: `The friend has been successfully registered` });
 
+      }
+    
+    } catch (e) {
+      console.error;
+    }
+  }
+  async removeFrined(req, res) {
+    try {
+      const { username, friend} = req.body
+      const candidate = await FriendList.findOne({ username });
+      if (candidate) {
+       await candidate.update({
+          username: username,
+          friends: candidate.friends.filter((item) => item !== friend)
+        })
+        res.json(candidate)
+      } else {
+        
+        return res.json({ message: `no friend with same username` });
+
+      }
+    } catch (e) {
+      console.error;
+    }
+  }
+  async getOunFriends(req, res) {
+    try {
+      const { username } = req.body
+      const list = await FriendList.findOne({
+        "username": username
+      })
+      return res.json(list.friends)
+    } catch (e) {
+      console.error;
+    }
+  }
+  async getUser(req, res) {
+    try {
+      const { username } = req.body
+      const user = await User.findOne({
+        name: username
+      })
+      return res.json(user)
+    } catch (e) {
+      console.error;
+    }
+  }
 
 
 
