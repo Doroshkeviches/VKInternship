@@ -7,24 +7,20 @@ import { setNameRedux, userAuthRedux } from '../../../redux/toolkitReducer';
 import { useSelector } from 'react-redux';
 import useAuth from '../../../components/auth/userAuth';
 import { useNavigate } from 'react-router-dom';
+import { url } from '../../../constants/url';
 
 interface Date {
     year: string,
     month: string,
     day: string
 }
-interface Dis {
-    toolkit: {
-        name: string
-    }
-}
 
 const RegistrationContainer = () => {
-    
-    const [name, setName] = useState<string>()
+    const [login, setLogin] = useState(false)
+    const [name, setName] = useState<string>('')
     const [lastName, setLastName] = useState<string>()
     const [telNumber, setTelNumber] = useState<string>()
-    const [password, setPassword] = useState<string>()
+    const [password, setPassword] = useState<string>('')
     const dispatch = useAppDispatch()
     const [selectedDate, setSelectedDate] = useState<Date>({} as Date);
 
@@ -59,6 +55,35 @@ const RegistrationContainer = () => {
             history('/')
          }
     }, [user])
+    function loginApi(username: string, password: string) {
+        fetch(url + 'login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: username,
+                password: password
+    
+            }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log(data)
+            });
+    }
+    if(login) {
+        return(
+            <div>
+                <input className='registration-container-name' type="text" placeholder='Ваше имя' value={name} onChange={(e) => setName(e.target.value)} required={true} />
+                <input className='registration-container-password' type="text" placeholder='ASD123qwe' value={password} onChange={(e) => setPassword(e.target.value)} required={true} />
+                <button onClick={() => loginApi(name,password)}>Войти</button>
+                <button onClick={() => setLogin(false)}>Регистрация</button>
+
+            </div>
+
+        )
+    }
     return (
         <div className="registration-container">
             <div className="registration-container-header header-big-text">Впервые ВКонтакте?</div>
@@ -96,6 +121,7 @@ const RegistrationContainer = () => {
             }>
                 Зарегистрироваться
             </button>
+            <button onClick={() => setLogin(true)}>Войти</button>
 
         </div>
     );

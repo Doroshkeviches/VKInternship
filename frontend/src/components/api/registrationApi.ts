@@ -21,9 +21,8 @@ export const registration = (telNumber: string, password: string, name: string, 
     })
         .then((res) => res.json())
         .then((data) => {
-            console.log(data)
             if (data.message === 'The user has been successfully registered') {
-
+                //TODO Перенаправление на следующую страницу
             }
         });
 }
