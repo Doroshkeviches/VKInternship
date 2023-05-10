@@ -4,3 +4,6 @@
 для запуска Backend-части используйте cd backend + npm start,
 для запуска Socekd-части используйте cd server + npm start,
 буду рад ответить на любые вопросы https://t.me/Doroshkeviches , Doroshkeviches@yandex.ru .
+
+Информация по функционалу:
+Для создания поста введите текст в инпут и нажмите Enter 
